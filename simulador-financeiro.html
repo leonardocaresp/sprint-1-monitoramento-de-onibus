@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador</title>
+</head>
+
+<body>
+  <h2>Calculadora Financeira de Gastos e Lucros por Linha de Ônibus</h2>
+
+  <div style="display: flex; row-gap: 8px; flex-direction: column;">
+    <div>
+      Nome da linha:
+      <input type="text" id="ipt_nome" placeholder="ex: 175P-10">
+    </div>
+    <div>
+      Estimativa de passageiros que a <b>linha inteira</b> transporta por dia:
+      <input type="text" id="ipt_passageiros" placeholder="ex: 8000">
+    </div>
+    <div>
+      Quantidade de ônibus rodando nessa linha por dia:
+      <input type="text" id="ipt_qtd_bus" placeholder="ex: 10">
+    </div>
+    <div>
+      Limite de capacidade máxima de passageiros por ônibus:
+      <input type="text" id="ipt_capacidade" placeholder="ex: 80">
+    </div>
+    <div>
+      Quantidade de viagens que cada onibus faz por dia (ida + volta = 2 viagens):
+      <input type="text" id="ipt_viagens" placeholder="ex: 12">
+    </div>
+    <div>
+      Distância entre os <b>pontos finais</b> dessa linha (km): 
+      <input type="text" id="ipt_dist" placeholder="ex: 10">
+    </div>
+    <div>
+      Valor da passagem (R$):
+      <input type="text" id="ipt_passagem" placeholder="ex: 5,30">
+    </div>
+  </div>
+  <br>
+
+  <button onclick="calcular()">Calcular</button>
+  <br>
+
+  <p><b>OBS:</b> Para os cálculos dos gastos está sendo considerado o valor de <b>R$11,05</b>, que consiste no custo
+    ponderado por quilômetro dos sistema de ônibus urbanos do Brasil, segundo último relatório anual da NTU (Associação
+    Nacional das Empresas de Transportes Urbanos). Já em relação aos cálculos de margem foram considerados os dados do Portal de Transparência da SPTrans, que relata quantos passageiros pegam cada linha de ônibus por dia, após a análise desses dados é posível identificar uma <b>margem de 3%</b> de pico máximo na quantidade de passageiros durante os dias.</p>
+
+  <div id="div_mensagem"></div>
+  <br>
+  <br>
+
+</body>
+<script>
+  function calcular() {
+    //valores dos inputs
+    let nome = ipt_nome.value
+    let passageiros = Number(ipt_passageiros.value)
+    let capacidade = Number(ipt_capacidade.value)
+    let qtd_bus = Number(ipt_qtd_bus.value)
+    let viagens = Number(ipt_viagens.value)
+    let dist = Number(ipt_dist.value)
+    let passagem = Number((ipt_passagem.value).replace(',', '.'))
+
+    //valores pre definidos
+    let gasto_por_km = 11.05
+
+    //calculos das informações recebidas (SEM A NOSSA SOLUÇÃO)
+    let passageiros_margem = passageiros * 1.03
+    let viagens_totais = viagens * qtd_bus
+    let dist_total = dist * viagens_totais
+    let gasto_total = dist_total * gasto_por_km
+    let ganho_total = passageiros * passagem
+    let lucro = ganho_total - gasto_total
+    let ocupacao = (passageiros / viagens_totais).toFixed(0)
+    let ocupacao_margem = (passageiros * 1.03 / viagens_totais).toFixed(0)
+    let perc_ocupacao = (ocupacao / capacidade) * 100
+    let perc_ocupacao_margem = (ocupacao_margem / capacidade) * 100
+
+    div_mensagem.innerHTML = `
+        <h3>Resultados estimados da linha ${nome}:</h3>
+        
+        Ganhos nessa linha: R$${ganho_total.toFixed(2)} <br>
+        Gastos nessa linha: R$${gasto_total.toFixed(2)} <br>
+        Lucro total: R$${lucro.toFixed(2)}<br>
+        Estimativa de passageiros por viagem: ${ocupacao} pass. (margem: ${ocupacao_margem} pass.)<br>
+        Ocupação dos ônibus: ${perc_ocupacao.toFixed(2)}% (margem: ${perc_ocupacao_margem.toFixed(2)}%)
+        <br> <br>`
+
+    // Calculo das informações ideais
+    let viagens_totais_depois = passageiros_margem / capacidade
+    let qtd_bus_depois = (viagens_totais_depois / viagens).toFixed(0) 
+    let ocupacao_depois = (passageiros / viagens_totais_depois).toFixed(0)
+    let ocupacao_depois_margem = (ocupacao_depois * 1.03).toFixed(0)
+
+    let perc_ocupacao_depois = (ocupacao_depois / capacidade) * 100
+    let perc_ocupacao_depois_margem = (ocupacao_depois_margem / capacidade) * 100
+
+    let dist_total_depois = viagens_totais_depois * dist
+    let gasto_total_depois = dist_total_depois * gasto_por_km
+    let lucro_depois = ganho_total - gasto_total_depois
+    let diferenca = lucro_depois - lucro
+
+    if (ocupacao_margem < capacidade) {
+      div_mensagem.innerHTML += `
+        Essa linha está andando com <b>mais ônibus do que o necessário.</b>
+
+        <h3>Resultados estimados da linha ${nome} (depois): </h3>
+
+        Essa linha pode <b>retirar ${qtd_bus - qtd_bus_depois} ônibus da frota </b> e andar com apenas ${qtd_bus_depois} ônibus.<br> <br>
+
+        Ganhos nessa linha: R$${ganho_total.toFixed(2)} <br>
+        Gastos nessa linha: R$${gasto_total_depois.toFixed(2)} <br>
+        Lucro total: R$${lucro_depois.toFixed(2)} <br>
+        Estimativa de passageiros por viagem: ${ocupacao_depois} pass. (margem: ${ocupacao_depois_margem} pass.) <br>
+        Ocupação dos ônibus: ${perc_ocupacao_depois.toFixed(2)}% (margem: ${perc_ocupacao_depois_margem.toFixed(2)}%) <br> <br>
+
+        A diferença do lucro <b>pode chegar a R$${diferenca.toFixed(2)}</b> nessa linha.
+        `
+    } else if (ocupacao_margem > capacidade) {
+      div_mensagem.innerHTML += `
+        Essa linha está andando com <b>menos ônibus do que o necessário.</b>
+
+        <h3>Resultados estimados da linha ${nome} (depois): </h3>
+
+        Essa linha deve <b>aumentar ${qtd_bus_depois - qtd_bus} ônibus da frota </b> e andar com ${qtd_bus_depois} ônibus.<br> <br>
+
+        Ganhos nessa linha: R$${ganho_total.toFixed(2)} <br>
+        Gastos nessa linha: R$${gasto_total_depois.toFixed(2)} <br>
+        Lucro total: R$${lucro_depois.toFixed(2)} <br>
+        Estimativa de passageiros por viagem: ${ocupacao_depois} pass. (margem: ${ocupacao_depois_margem} pass.) <br>
+        Ocupação dos ônibus: ${perc_ocupacao_depois.toFixed(2)}% (margem: ${perc_ocupacao_depois_margem.toFixed(2)}%) <br> <br>
+
+        O lucro inicial acabará sendo menor nessa linha, mas agora ela irá respeitar as leis de trânsito e não deixará brecha para a concessionária tomar uma punição administrativa pela infração da capacidade máxima de passageiros, que pode chegar a até <b>R$2001,30</b> (7000 vezes o valor da Unidade Monetária de Referência de Passageiros - R$ 0,285), segundo o art. 60 da Lei nº 10.233. Além da multa que o motorista teria que pagar de <b>R$293,47</b> por quebrar o artigo 231 do Código de Trânsito Brasileiro (transitação com o veículo com lotação excedente).
+        `
+    } else if (ocupacao_margem == capacidade) {
+      div_mensagem.innerHTML += `Essa linha está andando com <b>a quantidade necessária de ônibus.`
+    }
+  }
+</script>
+
+</html>
