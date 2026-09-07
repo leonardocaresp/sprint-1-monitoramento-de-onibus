@@ -9,11 +9,11 @@ O projeto engloba o uso de sensores de bloqueio/distância adquiridos por demand
 
 ## Autores
 
+- [@marcoaclxt](https://github.com/marcoaclxt)
 - [@crocejoao](https://github.com/crocejoao)
 - [@leonardocaresp](https://github.com/leonardocaresp)
 - [@Joao-Henrique-A](https://github.com/Joao-Henrique-A)
 - [@Ernani-Carvalho](https://github.com/Ernani-Carvalho)
 - [@gustavoFermSz](https://github.com/gustavoFermSz)
-- [@marcoaclxt](https://github.com/marcoaclxt)
 - [@Pedro-Antunes-spt](https://github.com/Pedro-Antunes-spt)
 
