@@ -8,7 +8,8 @@
 </head>
 
 <body>
-  <h2>Calculadora Financeira de Receita Diária por Linha</h2>
+  <h2>Calculadora Financeira de Remanejamento de Frotas - DataBus</h2>
+  <p>Preencha as informações considerando os valores de <b>UM DIA</b>.</p>
 
   <div style="display: flex; row-gap: 8px; flex-direction: column;">
     <div>
@@ -179,6 +180,7 @@
           <div style="color: green; font-weight: 900;">
             Diferença de lucro: R$${diferenca.toFixed(2)}
           </div>
+          <h4>Todos os valores são estimados e os resultados de lucro não são garantidos na compra do nosso sistema, isso depende de como você remanejará sua frota.</h3>
         </div>`
     } else if (qtd_bus_depois > qtd_bus) {
       div_mensagem.innerHTML += `
@@ -213,6 +215,7 @@
           <div style="color: green; font-weight: 900;">
             Diferença de lucro: R$${diferenca.toFixed(2)}
           </div>
+          <h4>Todos os valores são estimados e os resultados de lucro não são garantidos na compra do nosso sistema, isso depende de como você remanejará sua frota.</h3>
         </div>`
     } else if (qtd_bus_depois == qtd_bus) {
       div_mensagem.innerHTML += `Essa linha está andando com <b>a quantidade necessária de ônibus.`
