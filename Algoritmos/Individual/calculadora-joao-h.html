@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador</title>
+</head>
+
+<body>
+
+    <h2>Calculadora Financeira de Gastos e Lucros por Linha de Ônibus</h2>
+
+    <div>
+
+        <div>
+            Nome da linha:
+            <input type="text" id="ipt_nome" placeholder="ex: 175P-10">
+        </div>
+
+        <div>
+            Passageiros por dia:
+            <input type="text" id="ipt_passageiros" placeholder="ex: 8000">
+        </div>
+
+        <div>
+            Quantidade de ônibus:
+            <input type="text" id="ipt_qtd_bus" placeholder="ex: 10">
+        </div>
+
+        <div>
+            Capacidade por ônibus:
+            <input type="text" id="ipt_capacidade" placeholder="ex: 80">
+        </div>
+
+        <div>
+            Valor da passagem:
+            <input type="text" id="ipt_passagem" placeholder="ex: 5,30">
+        </div>
+
+    </div>
+
+    <br>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <br><br>
+
+    <div id="div_mensagem"></div>
+
+</body>
+
+<script>
+
+    function calcular() {
+
+    let nome = ipt_nome.value
+    let passageiros = Number(ipt_passageiros.value)
+    let qtd_bus = Number(ipt_qtd_bus.value)
+    let capacidade = Number(ipt_capacidade.value)
+    let passagem = Number(ipt_passagem.value)
+
+    let capacidade_total = qtd_bus * capacidade
+    let ganho_total = passageiros * passagem
+    let ocupacao = (passageiros / capacidade_total) * 100
+
+    div_mensagem.innerHTML = ` <h3>Resultados da linha ${nome}:</h3>
+    Capacidade total dos ônibus: ${capacidade_total} passageiros <br>
+    Ganho estimado: R$${ganho_total.toFixed(2)} <br>
+    Ocupação dos ônibus: ${ocupacao.toFixed(2)}%`
+
+        if (passageiros > capacidade_total) {
+            div_mensagem.innerHTML += `
+                <br>
+                Essa linha possui <b>mais passageiros do que sua capacidade.</b> `
+        } else {
+
+            div_mensagem.innerHTML += `
+                <br>
+                A quantidade de ônibus é <b>suficiente para os passageiros.</b>`
+        }
+    }
+
+</script>
+
+</html>
+
