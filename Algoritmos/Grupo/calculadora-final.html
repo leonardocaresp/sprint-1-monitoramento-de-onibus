@@ -44,7 +44,7 @@
       <b>Valores pré-definidos: </b>
     </div>
     <div>
-      <i>Gasto por km: <b>R$10.80</b> (Associação
+      <i>Gasto por km: <b>R$10.93</b> (Associação
     Nacional das Empresas de Transportes Urbanos)</i>
     </div>
     <div>
@@ -74,7 +74,7 @@
     let passagem = Number((ipt_passagem.value))
 
     //valores pre definidos
-    let gasto_por_km = 10.8
+    let gasto_por_km = 10.93
     let margem = 1.03
     let valor_multa = 293.47 
 
@@ -84,7 +84,7 @@
     let dist_total = dist * viagens_totais
     let ganho_total = passageiros * passagem
     let ocupacao = (passageiros / viagens_totais)
-    let ocupacao_margem = (passageiros * margem / viagens_totais)
+    let ocupacao_margem = (passageiros_margem / viagens_totais)
     let perc_ocupacao = (ocupacao / capacidade) * 100
     let perc_ocupacao_margem = (ocupacao_margem / capacidade) * 100
     let multa_total = 0
@@ -129,11 +129,6 @@
     let ocupacao_depois = (passageiros / viagens_totais_depois)
     let ocupacao_depois_margem = (ocupacao_depois * margem)
 
-    if (ocupacao_depois_margem > capacidade ) {
-      qtd_bus_depois ++
-      ocupacao_depois = (passageiros / viagens_totais_depois)
-      ocupacao_depois_margem = (ocupacao_depois * margem)
-    }
     if (qtd_bus_depois == 0 ) {
       qtd_bus_depois ++
       ocupacao_depois = (passageiros / viagens_totais_depois)
