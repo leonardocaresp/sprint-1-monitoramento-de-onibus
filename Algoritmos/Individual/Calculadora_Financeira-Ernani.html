@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Otimização</title>
+</head>
+
+<body>
+  <h2>Simulador Financeiro de Frota (Análise Diária)</h2>
+  <p>Insira os dados referentes a um dia de operação da linha:</p>
+
+  <p>
+    Identificador da linha: <br>
+    <input type="text" id="in_linha" placeholder="ex: 175P-10">
+  </p>
+  <p>
+    Total de passageiros no dia: <br>
+    <input type="text" id="in_passageiros" placeholder="ex: 8000">
+  </p>
+  <p>
+    Tamanho da frota atual: <br>
+    <input type="text" id="in_frota" placeholder="ex: 10">
+  </p>
+  <p>
+    Capacidade máxima do veículo: <br>
+    <input type="text" id="in_capacidade" placeholder="ex: 80">
+  </p>
+  <p>
+    Viagens diárias por ônibus: <br>
+    <input type="text" id="in_viagens" placeholder="ex: 12">
+  </p>
+  <p>
+    Extensão do trajeto (km): <br>
+    <input type="text" id="in_distancia" placeholder="ex: 10">
+  </p>
+  <p>
+    Valor da tarifa cobrada (R$): <br>
+    <input type="text" id="in_tarifa" placeholder="ex: 5.30">
+  </p>
+
+  <p>
+    <b>Bases de cálculo utilizadas:</b><br>
+    <i>Custo operacional por km: <b>R$11.05</b> (NTU)</i><br>
+    <i>Infração por excesso de lotação: <b>R$293.47</b> (CTB)</i><br>
+    <i>Margem de segurança de passageiros: <b>3%</b> (SPTrans)</i>
+  </p>
+
+  <button onclick="analisarCenario()">Gerar Análise</button>
+  <br><br>
+  
+  <div id="div_resultado"></div>
+
+</body>
+<script>
+  function analisarCenario() {
+    // Captura dos dados digitados
+    let linhaViacao = in_linha.value
+    let qtdPassageiros = Number(in_passageiros.value)
+    let capMaxima = Number(in_capacidade.value)
+    let frotaAtual = Number(in_frota.value)
+    let viagensDia = Number(in_viagens.value)
+    let percursoKm = Number(in_distancia.value)
+    let valorTarifa = Number(in_tarifa.value)
+
+    // Variáveis fixas do sistema
+    let custoKm = 11.05
+    let margemSeguranca = 1.03
+    let multaLotacao = 293.47 
+
+    // Cálculo do cenário ATUAL
+    let passComMargem = qtdPassageiros * margemSeguranca
+    let totalViagensDia = viagensDia * frotaAtual
+    let kmRodadoDia = percursoKm * totalViagensDia
+    let receitaDiaria = qtdPassageiros * valorTarifa
+    
+    let mediaOcupacao = qtdPassageiros / totalViagensDia
+    let mediaOcupacaoMargem = passComMargem / totalViagensDia
+    
+    let taxaOcupacao = (mediaOcupacao / capMaxima) * 100
+    let taxaOcupacaoMargem = (mediaOcupacaoMargem / capMaxima) * 100
+    
+    let custoMultas = 0
+
+    if (mediaOcupacao > capMaxima) {
+      custoMultas = multaLotacao * frotaAtual
+    }
+    
+    let despesaDiaria = (kmRodadoDia * custoKm) + custoMultas
+    let lucroAtual = receitaDiaria - despesaDiaria
+
+    div_resultado.innerHTML = `
+        <h3>Diagnóstico Atual - Linha ${linhaViacao}</h3>
+        <p>
+          Quilometragem percorrida: ${kmRodadoDia} km <br>
+          Média de passageiros por viagem: ${mediaOcupacao.toFixed(0)} (considerando margem: ${mediaOcupacaoMargem.toFixed(0)}) <br>
+          Taxa de lotação: ${taxaOcupacao.toFixed(2)}% (considerando margem: ${taxaOcupacaoMargem.toFixed(2)}%) <br><br>
+          Faturamento: R$${receitaDiaria.toFixed(2)} <br>
+          Gastos com infrações: R$${custoMultas.toFixed(2)} <br>
+          Custos operacionais totais: R$${despesaDiaria.toFixed(2)} <br>
+          <b>Lucro atual estimado: R$${lucroAtual.toFixed(2)}</b>
+        </p>
+        <hr>`
+
+    // Cálculo do cenário IDEAL
+    let viagensIdeal = passComMargem / capMaxima
+    let frotaIdeal = (viagensIdeal / viagensDia).toFixed(0) 
+    
+    let ocupacaoIdeal = qtdPassageiros / viagensIdeal
+    let ocupacaoIdealMargem = ocupacaoIdeal * margemSeguranca
+
+    if (ocupacaoIdealMargem > capMaxima) {
+      frotaIdeal++
+      ocupacaoIdeal = qtdPassageiros / viagensIdeal
+      ocupacaoIdealMargem = ocupacaoIdeal * margemSeguranca
+    }
+    
+    if (frotaIdeal == 0) {
+      frotaIdeal++
+      ocupacaoIdeal = qtdPassageiros / viagensIdeal
+      ocupacaoIdealMargem = ocupacaoIdeal * margemSeguranca
+    }
+
+    let taxaOcupacaoIdeal = (ocupacaoIdeal / capMaxima) * 100
+    let taxaOcupacaoIdealMargem = (ocupacaoIdealMargem / capMaxima) * 100
+
+    let kmIdealDia = viagensIdeal * percursoKm
+    let despesaIdeal = kmIdealDia * custoKm
+    let lucroIdeal = receitaDiaria - despesaIdeal
+    let variacaoLucro = lucroIdeal - lucroAtual
+
+    // Condições de saída baseadas no cenário ideal
+    if (frotaIdeal < frotaAtual) {
+      let removerOnibus = frotaAtual - frotaIdeal
+      
+      div_resultado.innerHTML += `
+      Recomendação: <b>Retirar ${removerOnibus} veículo(s) da operação.</b>
+      
+      <h3>Projeção Pós-Ajuste - Linha ${linhaViacao}</h3>
+      <p>
+        Nova frota: ${frotaIdeal} veículos <br>
+        Nova quilometragem percorrida: ${kmIdealDia.toFixed(2)} km <br>
+        Média de passageiros por viagem: ${ocupacaoIdeal.toFixed(0)} (considerando margem: ${ocupacaoIdealMargem.toFixed(0)}) <br>
+        Taxa de lotação: ${taxaOcupacaoIdeal.toFixed(2)}% (considerando margem: ${taxaOcupacaoIdealMargem.toFixed(2)}%) <br><br>
+        Faturamento: R$${receitaDiaria.toFixed(2)} <br>
+        Gastos com infrações: R$0.00 <br>
+        Custos operacionais totais: R$${despesaIdeal.toFixed(2)} <br>
+        <b>Lucro projetado: R$${lucroIdeal.toFixed(2)}</b> <br><br>
+        <b style="color: blue;">Crescimento no lucro: R$${variacaoLucro.toFixed(2)}</b>
+      </p>
+      <small><i>Aviso: Os valores são simulações matemáticas. A realidade financeira dependerá da execução prática da frota.</i></small>`
+      
+    } else if (frotaIdeal > frotaAtual) {
+      let adicionarOnibus = frotaIdeal - frotaAtual
+      
+      div_resultado.innerHTML += `
+      Alerta: A frota atual gerou <b>${frotaAtual} multa(s)</b> por superlotação. <br>
+      Recomendação: <b>Adicionar ${adicionarOnibus} veículo(s) na operação.</b>
+      
+      <h3>Projeção Pós-Ajuste - Linha ${linhaViacao}</h3>
+      <p>
+        Nova frota: ${frotaIdeal} veículos <br>
+        Nova quilometragem percorrida: ${kmIdealDia.toFixed(2)} km <br>
+        Média de passageiros por viagem: ${ocupacaoIdeal.toFixed(0)} (considerando margem: ${ocupacaoIdealMargem.toFixed(0)}) <br>
+        Taxa de lotação: ${taxaOcupacaoIdeal.toFixed(2)}% (considerando margem: ${taxaOcupacaoIdealMargem.toFixed(2)}%) <br><br>
+        Faturamento: R$${receitaDiaria.toFixed(2)} <br>
+        Gastos com infrações: R$0.00 <br>
+        Custos operacionais totais: R$${despesaIdeal.toFixed(2)} <br>
+        <b>Lucro projetado: R$${lucroIdeal.toFixed(2)}</b> <br><br>
+        <b style="color: blue;">Crescimento no lucro: R$${variacaoLucro.toFixed(2)}</b>
+      </p>
+      <small><i>Aviso: Os valores são simulações matemáticas. A realidade financeira dependerá da execução prática da frota.</i></small>`
+      
+    } else if (frotaIdeal == frotaAtual) {
+      div_resultado.innerHTML += `<p>O diagnóstico aponta que a linha já opera com a <b>quantidade exata de veículos</b> necessária para a demanda.</p>`
+    }
+  }
+</script>
+</html>
