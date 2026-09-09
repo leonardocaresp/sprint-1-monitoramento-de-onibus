@@ -84,7 +84,7 @@
     let dist_total = dist * viagens_totais
     let ganho_total = passageiros * passagem
     let ocupacao = (passageiros / viagens_totais)
-    let ocupacao_margem = (passageiros * margem / viagens_totais)
+    let ocupacao_margem = (passageiros_margem / viagens_totais)
     let perc_ocupacao = (ocupacao / capacidade) * 100
     let perc_ocupacao_margem = (ocupacao_margem / capacidade) * 100
     let multa_total = 0
@@ -129,11 +129,6 @@
     let ocupacao_depois = (passageiros / viagens_totais_depois)
     let ocupacao_depois_margem = (ocupacao_depois * margem)
 
-    if (ocupacao_depois_margem > capacidade ) {
-      qtd_bus_depois ++
-      ocupacao_depois = (passageiros / viagens_totais_depois)
-      ocupacao_depois_margem = (ocupacao_depois * margem)
-    }
     if (qtd_bus_depois == 0 ) {
       qtd_bus_depois ++
       ocupacao_depois = (passageiros / viagens_totais_depois)
