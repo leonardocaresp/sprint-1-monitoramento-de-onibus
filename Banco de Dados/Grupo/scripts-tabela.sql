@@ -5,7 +5,8 @@ USE DataBus;
 -- Criação das tabelas, simbolizam personas e processos do sistema
 
 CREATE TABLE empresa (
-cnpj CHAR(18) PRIMARY KEY,
+id_empresa INT PRIMARY KEY AUTO_INCREMENT,
+cnpj CHAR(18) NOT NULL UNIQUE,
 nome_empresa VARCHAR(100) NOT NULL,
 email VARCHAR(100) NOT NULL UNIQUE,
 senha VARCHAR(100) NOT NULL,
@@ -16,7 +17,7 @@ telefone CHAR(15) NOT NULL UNIQUE
 
 
 CREATE TABLE registro_passageiro ( -- Trata do dado de entrada ou saída de um ônibus
-id INT PRIMARY KEY AUTO_INCREMENT,
+id_regis_passag INT PRIMARY KEY AUTO_INCREMENT,
 tipoDado TINYINT NOT NULL, -- 0 para saídas e 1 para entradas
 horario_data DATETIME DEFAULT CURRENT_TIMESTAMP,
 placa CHAR(7) NOT NULL,
@@ -28,7 +29,8 @@ CONSTRAINT chTipoDado CHECK(tipoDado IN(0, 1))
 
 
 CREATE TABLE onibus_tempo_real( -- Para monitoramento constante
-placa CHAR(7) PRIMARY KEY,
+id_onibus_tempo_real INT PRIMARY KEY AUTO_INCREMENT,
+placa CHAR(7) NOT NULL UNIQUE,
 codigo_linha VARCHAR(35) NOT NULL,
 nome_linha VARCHAR(30),
 passageiros INT DEFAULT 0 NOT NULL,
@@ -39,7 +41,8 @@ tarifa DECIMAL(4,2)
 
 
 CREATE TABLE onibus_relatorio_diario( -- Para monitoramento temporizado (p/ dia)
-placa CHAR(7) PRIMARY KEY,
+id_onibus_relat_diario INT PRIMARY KEY AUTO_INCREMENT,
+placa CHAR(7) NOT NULL UNIQUE,
 codigo_linha CHAR(7) NOT NULL,
 nome_linha VARCHAR(35) NOT NULL,
 viagens INT NOT NULL,
@@ -53,6 +56,7 @@ valor_total DECIMAL(10,2)
 
 
 CREATE TABLE linha( -- Representa dados de todos os ônibus de uma linha
+id_linha INT PRIMARY KEY AUTO_INCREMENT,
 codigo CHAR(7) NOT NULL,
 nome VARCHAR(100) NOT NULL,
 passageiros_total INT DEFAULT 0,
@@ -68,7 +72,8 @@ valor_total DECIMAL(10,2)
 
 --          INSERTS
 
-INSERT INTO empresa VALUES
+INSERT INTO empresa 
+(cnpj, nome_empresa, email, senha, regiao, telefone) VALUES
 ('00.000.000/0001-91', 'Mobi Brasil', 'mobi@email.com', 'senha123', 'São Paulo', '(11) 98765-4321'),
 ('00.121.011/0041-31', 'SPTrans', 'sptrans@email.com', 'senha1234', 'São Paulo','(11) 98765-4320'),
 ('00.011.011/0011-11', 'MobiRio', 'mobirio@email.com', 'senha1234', 'Rio de Janeiro', '(21) 98765-1520'),
@@ -82,7 +87,8 @@ INSERT INTO registro_passageiro (placa, tipoDado, linha) VALUES
 ('JKL3456', 0, '8150 - União');
 
 
-INSERT INTO onibus_tempo_real VALUES
+INSERT INTO onibus_tempo_real 
+(placa, codigo_linha, nome_linha, passageiros, capacidade_maxima, tarifa) VALUES
 ('ABC1134', '607C-10', 'Jardim Miriam - Itaim Bibi', 110, 120, 5.30),
 ('CBA1234', '5106-10', 'Mar Paulista - São Francisco', 80, 120, 5.30),
 ('JCC3412', '483 - Penha', 'Penha - Ipanema', 33, 80, 5.30),
@@ -123,7 +129,7 @@ FROM empresa;
 SELECT * FROM registro_passageiro;
 
 SELECT 
- id AS 'ID',
+ id_regis_passag AS 'Identificação (ID)',
  CASE
         WHEN tipoDado = 0 THEN 'Saída'
         ELSE 'Entrada'
@@ -161,7 +167,7 @@ SELECT
  total_passageiros AS 'Total de Passageiros',
  CONCAT('R$', tarifa) AS 'Valor da Tarifa',
  CONCAT('R$', valor_total) AS 'Valor Arrecadado'
-FROM onibus_tempo_real;
+FROM onibus_relatorio_diario;
 
 
 -- Apresentação de registros da linha
