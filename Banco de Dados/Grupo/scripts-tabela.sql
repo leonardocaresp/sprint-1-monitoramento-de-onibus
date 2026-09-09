@@ -17,12 +17,12 @@ telefone CHAR(15) NOT NULL UNIQUE
 
 CREATE TABLE registro_passageiro ( -- Trata do dado de entrada ou saída de um ônibus
 id INT PRIMARY KEY AUTO_INCREMENT,
-tipoDado TINYINT NOT NULL, -- 0 para saídas e 1 para entradas
+tipo_dado TINYINT NOT NULL, -- 0 para saídas e 1 para entradas
 horario_data DATETIME DEFAULT CURRENT_TIMESTAMP,
 placa CHAR(7) NOT NULL,
 linha VARCHAR(35) NOT NULL,
 
-CONSTRAINT chTipoDado CHECK(tipoDado IN(0, 1))
+CONSTRAINT chTipoDado CHECK(tipo_dado IN(0, 1))
 );
 
 
@@ -75,7 +75,7 @@ INSERT INTO empresa VALUES
 ('12.713.901/1021-51', 'Transcon', 'transcon@email.com', 'senha12354', 'Belo Horizonte', '(31) 98325-4320');
 
 
-INSERT INTO registro_passageiro (placa, tipoDado, linha) VALUES
+INSERT INTO registro_passageiro (placa, tipo_dado, linha) VALUES
 ('ABC1234', 0, '607C-10'),
 ('DEF5678', 1, '5106-10'),
 ('GHI9012', 1, '483 - Penha'),
@@ -125,7 +125,7 @@ SELECT * FROM registro_passageiro;
 SELECT 
  id AS 'ID',
  CASE
-        WHEN tipoDado = 0 THEN 'Saída'
+        WHEN tipo_dado = 0 THEN 'Saída'
         ELSE 'Entrada'
  END AS 'Tipo de registro',
  placa AS 'Placa',
