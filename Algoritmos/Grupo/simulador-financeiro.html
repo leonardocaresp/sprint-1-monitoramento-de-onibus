@@ -44,7 +44,7 @@
       <b>Valores pré-definidos: </b>
     </div>
     <div>
-      <i>Gasto por km: <b>R$11.05</b> (Associação
+      <i>Gasto por km: <b>R$10.80</b> (Associação
     Nacional das Empresas de Transportes Urbanos)</i>
     </div>
     <div>
@@ -74,7 +74,7 @@
     let passagem = Number((ipt_passagem.value))
 
     //valores pre definidos
-    let gasto_por_km = 11.05
+    let gasto_por_km = 10.8
     let margem = 1.03
     let valor_multa = 293.47 
 
@@ -96,7 +96,7 @@
     let lucro = ganho_total - gasto_total
 
     div_mensagem.innerHTML = `
-        <h3>Resultados estimados da linha ${nome}:</h3>
+        <h3>Resultados estimados da linha ${nome} em um dia:</h3>
         
         <div style="display: flex; row-gap: 8px; flex-direction: column;">
           <div>
@@ -151,7 +151,7 @@
     if (qtd_bus_depois < qtd_bus) {
       div_mensagem.innerHTML += `
       Essa linha pode <b>retirar ${qtd_bus - qtd_bus_depois} ônibus da frota</b>.
-      <h3>Resultados estimados da linha ${nome} pós mudanças:</h3>
+      <h3>Resultados estimados da linha ${nome} em um dia pós mudanças:</h3>
         <div style="display: flex; row-gap: 8px; flex-direction: column;">
           <div>
             Quantidade de ônibus: ${qtd_bus_depois} ônibus
@@ -183,10 +183,13 @@
           <h4>Todos os valores são estimados e os resultados de lucro não são garantidos na compra do nosso sistema, isso depende de como você remanejará sua frota.</h3>
         </div>`
     } else if (qtd_bus_depois > qtd_bus) {
+      if (lucro_depois < lucro) {
+        div_mensagem.innerHTML += `<h4>As informações inseridas são muito exageradas e não podem ser calculadas. </h4>`
+      } else {
       div_mensagem.innerHTML += `
       Essa linha está sujeita a <b>pagar ${qtd_bus} multas</b> por superar a capacidade máxima de passageiros. <br>
       Essa linha deve <b>aumentar ${qtd_bus_depois - qtd_bus} ônibus da frota</b>.
-      <h3>Resultados estimados da linha ${nome} pós mudanças:</h3>
+      <h3>Resultados estimados da linha ${nome} em um dia pós mudanças:</h3>
         <div style="display: flex; row-gap: 8px; flex-direction: column;">
           <div>
             Quantidade de ônibus: ${qtd_bus_depois} ônibus
@@ -217,6 +220,7 @@
           </div>
           <h4>Todos os valores são estimados e os resultados de lucro não são garantidos na compra do nosso sistema, isso depende de como você remanejará sua frota.</h3>
         </div>`
+      }
     } else if (qtd_bus_depois == qtd_bus) {
       div_mensagem.innerHTML += `Essa linha está andando com <b>a quantidade necessária de ônibus.`
     }
