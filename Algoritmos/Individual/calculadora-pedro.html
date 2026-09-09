@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calculadora databus</title>
+</head>
+<body>
+    <h2>Calculadora financeira Databus</h2> <br><br>
+
+    <label for="ipt_linha">Insira a linha do ônibus</label>
+    <input type="text" id="ipt_linha"> <br><br>
+   
+    <label for="ipt_quantidade de viagens">Insira a quantidade de viagens</label>
+    <input type="text" id="ipt_viagens"> <br><br>
+ 
+    <label for="ipt_tarifa">Insira a tarifa do ônibus</label>
+    <input type="text" id="ipt_tarifa"> <br><br>
+    
+    <label for="ipt_distancia">Distância da viagem</label>
+    <input type="text" id="ipt_distancia"> <br><br>
+
+    <label for="ipt_qtd">Quantidade de veículos</label>
+    <input type="text" id="ipt_qtd"><br><br>
+
+    <label for="ipt_capacidade">Insira a capacidade do ônibus</label>
+    <input type="text" id="ipt_capacidade"> <br><br>
+
+    <label for="ipt_passageiros">Insira quantos passageiros tiveram no dia</label>
+    <input type="text" id="ipt_passageiros"> <br><br>
+
+    <i>Gasto por km: <b>R$11.05</b>(Associação
+    Nacional das Empresas de Transportes Urbanos).</i><br>
+    <i>Multa por superlotação: <b>R$293.47</b>(Artigo 231, Código de Trânsito Brasileiro).</i> <br>
+    <i>Margem de possível aumento de passageiros: <b>3%</b> (Portal da Transparência SPTrans)</i> <br><br><br>
+
+    <button onclick="exibir()">Calcular</button> <br><br>
+    <div id="div_msg"></div>
+
+</body>
+<script>
+  function exibir(){
+    let linha = ipt_linha.value;
+    let viagens = Number(ipt_viagens.value);
+    let tarifa = Number(ipt_tarifa.value);
+    let distancia = Number(ipt_distancia.value);
+    let qtd_veículos = Number(ipt_qtd.value);
+    let capacidade = Number(ipt_capacidade.value);
+    let passageiros = Number(ipt_passageiros.value);
+    
+   
+    let gasto_km = Number(11.05);
+    let multa = Number(293.47);
+    let margem = Number(1.03);
+   
+    let passageiros_margem = (passageiros * margem);
+    let ganho = (passageiros * tarifa);
+    let viagens_total = (qtd_veículos * viagens);
+    let distancia_total = (distancia * viagens);
+    let ocupacao = (passageiros / viagens);
+    let multa_total = (multa * qtd_veículos);
+    
+    if (ocupacao > capacidade) {
+        multa_total = valor_multa * qtd_veículos
+    }
+     
+    let gasto = (distancia * gasto_km);
+    let lucro = (ganho - gasto);
+
+    div_msg.innerHTML = `<h2>Resultados da linha ${linha}</h2> <br>
+       
+        Distância total do trajeto: ${distancia.toFixed(2)}km <br>
+        Passageiros por viagem ${ocupacao.toFixed(2)} <br>
+        Ganho total nessa linha: R$${ganho.toFixed(2)} <br>
+        gasto com multa: R$${multa_total. toFixed(2)} <br>
+        Gasto nesta linha: R$${gasto.toFixed(2)} <br>
+        O lucro é de: R$${lucro.toFixed(2)}`
+}   
+
+</script>
+
+</html>
