@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataBus - Ferramentas</title>
+    <!--    <link rel="stylesheet" href="style.css">
+
+ -->
+</head>
+
+<body>
+
+    <div class="containerInfo">
+        <h2>Calcule o lucro e o gasto da operação de uma linha de onibus ao dia e veja como podemos ajudá-lo em sua
+            operação</h2>
+    </div>
+
+    <div class="containerMain">
+
+
+        <div class="containerDataEntering">
+
+            <div class="containerInput">
+                <span>Digite o número/código da linha de ônibus.</span>
+                <input type="text" id="ipt_numeroLinha" placeholder="Ex.: 412N-10">
+            </div>
+
+            <div class="containerInput">
+                <span>Digite qual a tarifa de ônibus na cidade em questão (reais).</span>
+                <input type="text" id="ipt_tarifOni" placeholder="Ex.: 5.40">
+            </div>
+
+            <div class="containerInput">
+                <span>Quantos passageiros essa linha costuma receber por dia?.</span>
+                <input type="text" id="ipt_qtddPassageirosLinhaDia" placeholder="Ex.: 8350">
+            </div>
+
+            <div class="containerInput">
+                <span>Qual a capacidade máxima de transporte de um ônibus dessa linha?.</span>
+                <input type="text" id="ipt_qtddMaxPassageirosOnibus" placeholder="Ex.: 98">
+            </div>
+
+            <div class="containerInput">
+                <span>Quantos km os ônibus da linha percorrem por trajeto (ida e volta)?</span>
+                <input type="text" id="ipt_kmPorTrajetoOni" placeholder="Ex.: 24">
+            </div>
+
+            <div class="containerInput">
+                <span>Quantos ônibus operam nesta linha?</span>
+                <input type="text" id="ipt_qtddOniLinha" placeholder="Ex.: 15">
+            </div>
+
+            <div class="containerInput">
+                <span>E quantos trajetos completos cada ônibus percorre por dia?</span>
+                <input type="text" id="ipt_qtddTrajetoOni" placeholder="Ex.: 8">
+            </div>
+
+
+            <div class="containerButton">
+
+                <button onclick="calcular()">Calcular cenário</button>
+
+            </div>
+
+        </div>
+
+
+        <div id="containerImage_FixedValues">
+
+            <div class="containerImage border"></div>
+
+            <div id="containerFixedValues">
+
+                <h3>Valores/dados operacionais pré-definidos</h3>
+                <p>Valor gasto por <span>km rodado do ônibus: </span>R$11,05 - segundo dados da Associação Nacional de
+                    Transportes Urbanos (2025).</p>
+                <p>Custo da <span>multa por superlotação: </span>R$293,47 - segundo o Artigo 231 do Código de Trânsito
+                    Brasileiro (Lei n° 13.855, 2019).</p>
+                <p>Margem de quantidade de <span>passageiros por viagem: </span>3%, segundo dados do Portal da
+                    Transparência da SPTrans.</p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div id="containerOutputs">
+
+        <div id="div_result"></div>
+
+    </div>
+
+
+
+</body>
+
+</html>
+
+<script>
+    // Valores monetários pré-definidos, setados aqui para facilitar visualização e diferenciação dos valores de entrada
+    let valCombustKm = 11.05;
+    let valMultaSuperlot = 293.47;
+    let haSuperlotação = false;
+    let mensagemMulta = '';
+    let valorTotalMultaDia = 0;
+    let valorTotalMultaMes = 0;
+
+    function calcular() {
+
+        let numeroLinha = ipt_numeroLinha.value;
+        let valTarifa = Number(ipt_tarifOni.value);
+        let qtddPassageirosLinhaDia = Number(ipt_qtddPassageirosLinhaDia.value);
+        let qtddMaxPassageirosOnibus = Number(ipt_qtddMaxPassageirosOnibus.value);
+        let kmTrajeto = Number(ipt_kmPorTrajetoOni.value);
+        let qtddOnibus = Number(ipt_qtddOniLinha.value);
+        let qtddTrajetoOni = Number(ipt_qtddTrajetoOni.value);
+
+        div_result.innerHTML = ''; // limpando tela
+
+        /*        COMEÇO VALORES        */
+
+
+        //Quanto UM ônibus dessa linha GANHA p/
+        //  dia
+        let valorGanhoPorOnibusAoDia = valTarifa * (qtddPassageirosLinhaDia / (qtddOnibus * qtddTrajetoOni));
+        //  mês
+        let valorGanhoPorOnibusMes = valorGanhoPorOnibusAoDia * 30;
+
+        // Quanto a linha GANHA por
+        //  dia
+        let valorGanhoPorLinhaAoDia = valTarifa * qtddPassageirosLinhaDia;
+        //  mês
+        let valorGanhoPorLinhaMes = valorGanhoPorLinhaAoDia * 30;
+
+        //Quanto UM ônibus dessa linha GASTA p/
+        // dia
+        let valorGastoPorOnibusAoDia = valCombustKm * kmTrajeto * qtddTrajetoOni;
+        // mês
+        let valorGastoPorOnibusMes = valorGastoPorOnibusAoDia * 30;
+
+        // Quanto A LINHA GASTA por 
+        // dia
+        let valorGastoPorLinhaAoDia = valorGastoPorOnibusAoDia * qtddOnibus;
+        // mês
+        let valorGastoPorLinhaMes = valorGastoPorLinhaAoDia * 30;
+
+
+        // Faturamento líquido da linha por
+        // dia
+        let faturaLiquiLinhaDia = valorGanhoPorLinhaAoDia - valorGastoPorLinhaAoDia;
+        // mês
+        let faturaLiquiLinhaMes = faturaLiquiLinhaDia * 30;
+
+
+        /*        FIM VALORES        */
+
+
+
+
+        /*       COMEÇO OCUPAÇÃO DO ÔNIBUS        */
+
+        // Quantidade de passageiros por ônibus (a cada trajeto)
+        let qtddPassageirosOnibusPorTrajeto = (qtddPassageirosLinhaDia / (qtddOnibus * qtddTrajetoOni))
+        // Essa quantidade acrescida da margem de 3%
+        let qtddMarginalPassageirosOnibusPorTrajeto = qtddPassageirosOnibusPorTrajeto * 1.03;
+
+        // Percentual de ocupação dos ônibus por trajeto
+        let percentOcupacaoOnibusPorTrajeto = (qtddPassageirosOnibusPorTrajeto / qtddMaxPassageirosOnibus) * 100;
+        // Esse percentual com a margem de 3%
+        let percentMarginalOcupacaoOnibusPorTrajeto = percentOcupacaoOnibusPorTrajeto * 1.03;
+
+        /*       FIM OCUPAÇÃO DO ÔNIBUS        */
+
+
+
+
+        /*       COMEÇO QUILOMETRAGEM ÔNIBUS        */
+        // Multiplicar km do trajeto pela quantidade de trajetos por ônibus e pela quantidade total de ônibus... da linha ao
+        // Dia
+        let totalKmLinhaDia = kmTrajeto * qtddTrajetoOni * qtddOnibus;
+        // Mês
+        let totalKmLinhaMes = totalKmLinhaDia * 30;
+
+        /*       FIM QUILOMETRAGEM ÔNIBUS       */
+
+
+
+
+        /*       COMEÇO VERIFICAÇÃO MULTA P/ SUPERLOTAÇÃO        */
+
+        // Verificar se há superlotação e, caso 1, aplicar multa para cada ônibus
+        if (qtddPassageirosOnibusPorTrajeto > qtddMaxPassageirosOnibus) {   // Aqui a qtddMarginal é garantidamente maior, visto que valores de entrada negativos não se sustentam na realidade 
+            valorTotalMultaDia = valMultaSuperlot * qtddOnibus;
+            valorTotalMultaMes = valorTotalMultaDia * 30;
+            faturaLiquiLinhaDia -= valorTotalMultaDia;
+            faturaLiquiLinhaMes -= valorTotalMultaMes;
+            haSuperlotação = true; // Há
+
+            mensagemMulta = `A linha opera com mais passageiros do que permitido, sendo a multa total para a linha de <span style="color: red;">R$${valorTotalMultaDia.toFixed(2)}</span>, acrescida de 7 pontos na carteira do motorista e possível remoção do veículo das vias até o pagamento da multa e documentação do ocorrido.`;
+
+        } else if (qtddMarginalPassageirosOnibusPorTrajeto > qtddMaxPassageirosOnibus && qtddPassageirosOnibusPorTrajeto <= qtddMaxPassageirosOnibus) {
+            haSuperlotação = false; // Não há (por enquanto)
+
+            mensagemMulta = `A linha opera no limite de passageiros permitido, considere os riscos disso, sabendo que a multa para cada um dos ${qtddOnibus} ônibus pode chegar a R$293,47 e o veículo estará retido ou será movido a pátio pela polícia no caso de lotação excessiva.`;
+
+        } else {
+            haSuperlotação = false; // Não há
+            mensagemMulta = `A linha está operando dentro do esperado para quantidade de passageiros por ônibus a cada trajeto.`;
+        }
+
+        /*       FIM VERIFICAÇÃO MULTA P/ SUPERLOTAÇÃO        */
+
+
+        /*  Mensagem de retorno da SITUAÇÃO ATUAL da linha  */
+        div_result.innerHTML = `
+        
+        <h3>Atualmente, a linha ${numeroLinha} opera diariamente sob os seguintes parâmetros:</h3>
+        
+        Quilometragem total da linha: ${totalKmLinhaDia.toFixed(1)}km ao dia.<br><br>
+        Quantidade de passageiros por viagem: ${qtddPassageirosOnibusPorTrajeto.toFixed(0)} pessoas (até ${qtddMarginalPassageirosOnibusPorTrajeto.toFixed(0)}, pela margem)<br><br>
+        Percentual de ocupação dos ônibus por viagem: ${percentOcupacaoOnibusPorTrajeto.toFixed(0)}% (até ${percentMarginalOcupacaoOnibusPorTrajeto.toFixed(0)}%).<br><br>
+        Valor ganho por dia: R$${valorGanhoPorLinhaAoDia.toFixed(2)}.<br><br>
+        ${mensagemMulta}<br><br>
+        Valor gasto por dia: R$${valorGastoPorLinhaAoDia.toFixed(2)}.<br><br>
+        Lucro diário: R$${faturaLiquiLinhaDia.toFixed(2)}.
+        `;
+
+
+
+
+        /*       COMEÇO VERIFICAÇÃO SE LINHA ESTÁ BEM, PRECISA MAIS ÔNIBUS OU MENOS ÔNIBUS         */
+        if (percentMarginalOcupacaoOnibusPorTrajeto <= 94 && percentOcupacaoOnibusPorTrajeto <= 91 && haSuperlotação == false) { // Garante que há espaço para aumento de passageiros por viagem
+            let qtddOnibusLinha = qtddPassageirosLinhaDia / (qtddMaxPassageirosOnibus * qtddTrajetoOni);
+            let diferencaQtddOnibusAntigaPraNova = qtddOnibus - qtddOnibusLinha.toFixed(0);
+
+            qtddPassageirosOnibusPorTrajeto = qtddPassageirosLinhaDia / (qtddOnibusLinha.toFixed(0) * qtddTrajetoOni);
+
+            if (qtddPassageirosOnibusPorTrajeto > qtddMaxPassageirosOnibus) {
+                qtddOnibusLinha = qtddOnibusLinha + 1;
+            }
+
+            qtddMarginalPassageirosOnibusPorTrajeto = qtddPassageirosOnibusPorTrajeto * 1.03;
+
+            percentOcupacaoOnibusPorTrajeto = (qtddPassageirosOnibusPorTrajeto / qtddMaxPassageirosOnibus) * 100;
+            percentMarginalOcupacaoOnibusPorTrajeto = percentOcupacaoOnibusPorTrajeto * 1.03;
+
+            valorGanhoPorOnibusAoDia = valTarifa * (qtddPassageirosLinhaDia / (qtddOnibusLinha.toFixed(0) * qtddTrajetoOni));
+            valorGanhoPorLinhaAoDia = valTarifa * qtddPassageirosLinhaDia;
+
+            let valorGastoPorOnibusAoDia = valCombustKm * kmTrajeto * qtddTrajetoOni;
+            let valorGastoPorLinhaAoDia = valorGastoPorOnibusAoDia * qtddOnibusLinha.toFixed(0);
+
+            let faturaLiquiLinhaDia = valorGanhoPorLinhaAoDia - valorGastoPorLinhaAoDia;
+
+
+            totalKmLinhaDia = kmTrajeto * qtddTrajetoOni * qtddOnibusLinha.toFixed(0);
+
+
+            div_result.innerHTML += `
+                <br><br>
+                <h3>Após mudanças, a linha ${numeroLinha} operará na seguinte ordem:</h3>
+                
+                Quantidade de ônibus:  ${qtddOnibusLinha.toFixed(0)}, diferença de -${diferencaQtddOnibusAntigaPraNova.toFixed(0)} para a antiga operação.<br><br>
+                Quilometragem total da linha: ${totalKmLinhaDia.toFixed(2)}km por dia.<br><br>
+                Quantidade de trajetos por ônibus: ${qtddTrajetoOni.toFixed(0)}.<br><br>
+                Quantidade de passageiros por viagem: ${qtddPassageirosOnibusPorTrajeto.toFixed(0)} pessoas (até ${qtddMarginalPassageirosOnibusPorTrajeto.toFixed(0)}, pela margem).<br><br>
+                Percentual de ocupação dos ônibus por viagem: ${percentOcupacaoOnibusPorTrajeto.toFixed(0)}% (até ${percentMarginalOcupacaoOnibusPorTrajeto.toFixed(0)}%).<br><br>
+                Valor ganho por dia: R$${valorGanhoPorLinhaAoDia.toFixed(2)}.<br><br>
+                Valor gasto por dia: R$${valorGastoPorLinhaAoDia.toFixed(2)}.<br><br>
+                Lucro diário: R$${faturaLiquiLinhaDia.toFixed(2)}.<br><br>
+                
+            `;
+
+
+
+        } else if (percentMarginalOcupacaoOnibusPorTrajeto > 94 && percentOcupacaoOnibusPorTrajeto > 91 && haSuperlotação == false) { // Garante que o ônibus está com lotação limite, mas não excessiva, então não há o que mudar
+
+            div_result.innerHTML += '<br><br>Como esta linha está atuando de forma correta segundo os índices de ocupação de ônibus, não há necessidades urgentes para fazer mudanças.';
+
+
+
+
+        } else { // Implica em lotação excessiva
+            let qtddOnibusLinha = (qtddPassageirosLinhaDia / (qtddMaxPassageirosOnibus * qtddTrajetoOni)) + 1;
+            let diferencaQtddOnibusAntigaPraNova = qtddOnibusLinha.toFixed(0) - qtddOnibus;
+
+            qtddPassageirosOnibusPorTrajeto = qtddPassageirosLinhaDia / (qtddOnibusLinha.toFixed(0) * qtddTrajetoOni);
+            qtddMarginalPassageirosOnibusPorTrajeto = qtddPassageirosOnibusPorTrajeto * 1.03;
+
+            percentOcupacaoOnibusPorTrajeto = (qtddPassageirosOnibusPorTrajeto / qtddMaxPassageirosOnibus) * 100;
+            percentMarginalOcupacaoOnibusPorTrajeto = percentOcupacaoOnibusPorTrajeto * 1.03;
+
+            valorGanhoPorOnibusAoDia = valTarifa * (qtddPassageirosLinhaDia / (qtddOnibusLinha.toFixed(0) * qtddTrajetoOni));
+            valorGanhoPorLinhaAoDia = valTarifa * qtddPassageirosLinhaDia;
+
+            let valorGastoPorOnibusAoDia = valCombustKm * kmTrajeto * qtddTrajetoOni;
+            let valorGastoPorLinhaAoDia = valorGastoPorOnibusAoDia * qtddOnibusLinha.toFixed(0);
+
+            let faturaLiquiLinhaDia = valorGanhoPorLinhaAoDia - valorGastoPorLinhaAoDia;
+
+
+            totalKmLinhaDia = kmTrajeto * qtddTrajetoOni * qtddOnibusLinha.toFixed(0);
+
+
+            div_result.innerHTML += `
+                <br><br>
+                <h3>Após adequações às normas de trânsito, a linha ${numeroLinha} operará na seguinte ordem:</h3>
+                
+                Quantidade de ônibus:  ${qtddOnibusLinha.toFixed(0)}, diferença de +${diferencaQtddOnibusAntigaPraNova.toFixed(0)} para a antiga operação.<br><br>
+                Quilometragem total da linha: ${totalKmLinhaDia.toFixed(2)}km por dia.<br><br>
+                Quantidade de trajetos por ônibus: ${qtddTrajetoOni.toFixed(0)}.<br><br>
+                Quantidade de passageiros por viagem: ${qtddPassageirosOnibusPorTrajeto.toFixed(0)} pessoas (até ${qtddMarginalPassageirosOnibusPorTrajeto.toFixed(0)}, pela margem).<br><br>
+                Percentual de ocupação dos ônibus por viagem: ${percentOcupacaoOnibusPorTrajeto.toFixed(0)}% (até ${percentMarginalOcupacaoOnibusPorTrajeto.toFixed(0)}%).<br><br>
+                Valor ganho por dia: R$${valorGanhoPorLinhaAoDia.toFixed(2)}.<br><br>
+                Valor gasto por dia: R$${valorGastoPorLinhaAoDia.toFixed(2)}.<br><br>
+                Lucro diário: R$${faturaLiquiLinhaDia.toFixed(2)}.<br><br>
+            `;
+        }
+
+
+
+        /*       FIM VERIFICAÇÃO SE LINHA ESTÁ BEM, PRECISA MAIS ÔNIBUS OU MENOS ÔNIBUS       */
+
+
+    }
+
+</script>
