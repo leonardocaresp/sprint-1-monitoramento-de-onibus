@@ -1,14 +1,17 @@
 #include "Ultrasonic.h"
 
+//Declaração
 int pinoEcho = 12;
 int pinoTrigger = 13;
 
 HC_SR04 sensor(pinoTrigger, pinoEcho);
 
+//Inicialização
 void setup() {
   Serial.begin(9600);
 }
 
+//Execução
 void loop() {
   float distancia = sensor.distance();
 
