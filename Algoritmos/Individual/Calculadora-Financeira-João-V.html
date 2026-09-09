@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Financeiro</title>
+</head>
+
+<body>
+  <h2>Calculadora Financeira de Receita Diária por Linha</h2>
+
+  <div style="display: flex; row-gap: 8px; flex-direction: column;">
+
+    <div>
+      <label for="ipt_nome">Código da linha:</label>
+      <input type="text" id="ipt_nome" placeholder="ex: 175P-10">
+    </div>
+
+    <div>
+      <label for="ipt_passageiros">Estimativa de passageiros:</label>
+      <input type="text" id="ipt_passageiros" placeholder="ex: 8000">
+    </div>
+
+    <div>
+      <label for="ipt_capacidade">Cap. Máx por ônibus:</label>    
+      <input type="text" id="ipt_capacidade" placeholder="ex: 80">
+    </div>
+
+    <div>
+      <label for="ipt_viagens">Viagens por ônibus:</label>
+      <input type="text" id="ipt_viagens" placeholder="ex: 12">
+    </div>
+
+    <div>
+      <label for="ipt_dist">Distância do trajeto (km):</label> 
+      <input type="text" id="ipt_dist" placeholder="ex: 10">
+    </div>
+
+    <div>
+      <label for="ipt_passagem">Valor da passagem (R$):</label>
+      <input type="text" id="ipt_passagem" placeholder="ex: 5.30">
+    </div>
+
+    <div>
+      <b>Valores pré-definidos:</b>
+    </div>
+
+    <div>
+      <i>Gasto por km: <b>R$11.05</b> (Associação
+    Nacional das Empresas de Transportes Urbanos)</i>
+    </div>
+
+    <div>
+      <i>Multa por superlotação: <b>R$293.47</b> (Artigo 231, Código de Trânsito Brasileiro)</i>
+    </div>
+
+    <div>
+      <i>Margem de passageiros: <b>3%</b> (Portal da Transparência SPTrans)</i>
+    </div>
+
+  </div> <br>
+
+  <button onclick="calcular()">Calcular</button> <br><br>
+ 
+  <button onclick="aumentarBus()">+1 Ônibus</button>
+  <button onclick="diminuirBus()">-1 Ônibus</button> <br><br>
+  
+  <div id="div_bus">Ônibus: 0 ônibus</div> <br>
+
+  <div id="div_mensagem"></div> <br><br>
+
+</body>
+</html>
+
+
+<script>
+
+
+  let qtd_bus = 0;
+
+  function aumentarBus() {
+    qtd_bus += 1
+    div_bus.innerHTML = `Ônibus: ${qtd_bus} ônibus`
+
+    calcular()
+  }
+
+  function diminuirBus() {
+    qtd_bus -= 1
+    div_bus.innerHTML = `Ônibus: ${qtd_bus} ônibus`
+
+    calcular()
+  }
+
+  function calcular() {
+    //valores dos inputs
+    let nome = ipt_nome.value
+    let passageiros = Number(ipt_passageiros.value);
+    let capacidade = Number(ipt_capacidade.value);
+    let viagens = Number(ipt_viagens.value);
+    let dist = Number(ipt_dist.value);
+    let passagem = Number((ipt_passagem.value));
+
+    //valores pre definidos
+    let gasto_por_km = 11.05
+    let margem = 1.03
+    let valor_multa = 293.47 
+
+    //calculos das informações recebidas (SEM A NOSSA SOLUÇÃO)
+    let passageiros_margem = passageiros * margem
+    let viagens_totais = viagens * qtd_bus
+    let dist_total = dist * viagens_totais
+    let ganho_total = passageiros * passagem
+    let ocupacao = (passageiros / viagens_totais)
+    let ocupacao_margem = (passageiros * margem / viagens_totais)
+    let perc_ocupacao = (ocupacao / capacidade) * 100
+    let perc_ocupacao_margem = (ocupacao_margem / capacidade) * 100
+    let multa_total = 0
+
+    if (ocupacao > capacidade) {
+      multa_total = valor_multa * qtd_bus
+    }
+    let gasto_total = (dist_total * gasto_por_km) + multa_total
+    let lucro = ganho_total - gasto_total
+
+    if (lucro >= 0) {
+      div_mensagem.innerHTML = `
+        <h3>Resultados estimados da linha ${nome}:</h3>
+        
+        <div style="display: flex; row-gap: 8px; flex-direction: column;">
+          <div>
+            Quilometragem total: ${dist_total}km
+          </div>
+          <div>
+            Passageiros por viagem: ${ocupacao.toFixed(0) } pass. (margem: ${ocupacao_margem.toFixed(0) } pass.)
+          </div>
+          <div>
+             Ocupação dos ônibus: ${perc_ocupacao.toFixed(2)}% (margem: ${perc_ocupacao_margem.toFixed(2)}%)
+          </div>
+          <div>
+            Ganho total: R$${ganho_total.toFixed(2)}
+          </div>
+          <div>
+            Gasto com multas: R$${multa_total.toFixed(2)}
+          </div>
+          <div>
+            Gasto total: R$${gasto_total.toFixed(2)} 
+          </div>
+          <div style="color: green;">
+            Lucro total: R$${lucro.toFixed(2)}
+          </div>
+        </div>
+        <br>`
+    } else {
+      div_mensagem.innerHTML = `
+        <h3>Resultados estimados da linha ${nome}:</h3>
+        
+        <div style="display: flex; row-gap: 8px; flex-direction: column;">
+          <div>
+            Quilometragem total: ${dist_total}km
+          </div>
+          <div>
+            Passageiros por viagem: ${ocupacao.toFixed(0) } pass. (margem: ${ocupacao_margem.toFixed(0) } pass.)
+          </div>
+          <div>
+             Ocupação dos ônibus: ${perc_ocupacao.toFixed(2)}% (margem: ${perc_ocupacao_margem.toFixed(2)}%)
+          </div>
+          <div>
+            Ganho total: R$${ganho_total.toFixed(2)}
+          </div>
+          <div>
+            Gasto com multas: R$${multa_total.toFixed(2)}
+          </div>
+          <div>
+            Gasto total: R$${gasto_total.toFixed(2)} 
+          </div>
+          <div style="color: red;">
+            Lucro total: R$${lucro.toFixed(2)}
+          </div>
+        </div>
+        <br>`
+    }    
+  }
+</script>
