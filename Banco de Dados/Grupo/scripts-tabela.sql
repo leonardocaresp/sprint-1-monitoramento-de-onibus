@@ -15,7 +15,6 @@ telefone CHAR(15) NOT NULL UNIQUE
 
 CREATE TABLE registro_passageiro ( -- Trata do dado de entrada ou saída de um ônibus
 id_regis_passag INT PRIMARY KEY AUTO_INCREMENT,
-id INT PRIMARY KEY AUTO_INCREMENT,
 tipo_dado TINYINT NOT NULL, -- 0 para saídas e 1 para entradas
 horario_data DATETIME DEFAULT CURRENT_TIMESTAMP,
 placa CHAR(7) NOT NULL,
