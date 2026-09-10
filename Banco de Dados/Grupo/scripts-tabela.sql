@@ -3,7 +3,6 @@ CREATE DATABASE DataBus;
 USE DataBus;
 
 -- Criação das tabelas, simbolizam personas e processos do sistema
-
 CREATE TABLE empresa (
 id_empresa INT PRIMARY KEY AUTO_INCREMENT,
 cnpj CHAR(18) NOT NULL UNIQUE,
@@ -60,7 +59,8 @@ valor_total DECIMAL(10,2)
         AS (passageiros_total * tarifa)
 );
 
---          INSERTS
+
+-- Inserção de dados fictícios nas tabelas
 INSERT INTO empresa 
 (cnpj, nome_empresa, email, senha, regiao, telefone) VALUES
 ('00.000.000/0001-91', 'Mobi Brasil', 'mobi@email.com', 'senha123', 'São Paulo', '(11) 98765-4321'),
@@ -95,6 +95,7 @@ INSERT INTO linha
 ('483', 'Penha - Ipanema', 3500, 1300, 1400, 800, 5.00),
 ('8150', 'União - Serra', 4000, 1500, 1600, 900, 6.25);
 
+
 -- Apresentação de registros de empresas no sistema
 SELECT * FROM empresa;
 -- Apresentação de registros de entrada e saída passageiros
@@ -105,6 +106,7 @@ SELECT * FROM registro_passageiro;
 SELECT * FROM onibus_relatorio_diario;
 -- Apresentação de registros da linha
 SELECT * FROM linha;
+
 
 -- Apresentação formatada das empresas no sistema
 SELECT
@@ -128,10 +130,7 @@ SELECT
   DATE_FORMAT(horario_data, '%d/%m/%Y %H:%m:%s')AS 'Data e hora'
 FROM registro_passageiro;
 
-
-
-
- 
+ -- Apresentação formatada da ocupação em tempo real dos ônibus
  SELECT
   placa AS 'Placa',
   codigo_linha AS 'Cód. da Linha',
@@ -141,11 +140,7 @@ FROM registro_passageiro;
   CONCAT('R$', tarifa) AS 'Valor da Tarifa'
  FROM onibus_tempo_real;
  
-
-
-
-
-
+ -- Apresentação formatada de todas as entradas diárias no ônibus
 SELECT
  placa AS 'Placa',
  codigo_linha AS 'Cód. da Linha',
@@ -156,9 +151,7 @@ SELECT
  CONCAT('R$', valor_total) AS 'Valor Arrecadado'
 FROM onibus_relatorio_diario;
 
-
-
-
+-- Apresentação formatada de todas as entradas das linhas.
 SELECT 
  codigo AS 'Código',
  nome AS 'Nome da Linha',

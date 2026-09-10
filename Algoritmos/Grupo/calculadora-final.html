@@ -100,6 +100,9 @@
         
         <div style="display: flex; row-gap: 8px; flex-direction: column;">
           <div>
+            Viagens totais: ${viagens_totais} viagens
+          </div>
+          <div>
             Quilometragem total: ${dist_total}km
           </div>
           <div>
@@ -152,6 +155,9 @@
             Quantidade de ônibus: ${qtd_bus_depois} ônibus
           </div>
           <div>
+            Viagens totais: ${viagens_totais_depois} viagens
+          </div>
+          <div>
             Quilometragem total: ${dist_total_depois}km
           </div>
           <div>
@@ -175,7 +181,10 @@
           <div style="color: green; font-weight: 900;">
             Diferença de lucro: R$${diferenca.toFixed(2)}
           </div>
-          <h4>Todos os valores são estimados e os resultados de lucro não são garantidos na compra do nosso sistema, isso depende de como você remanejará sua frota.</h3>
+          <div style="color: green; font-weight: 900; font-size: 20px;">
+            Diferença de lucro em um mês: R$${(diferenca * 30).toFixed(2)}
+          </div>
+          <h4>Todos os valores são estimados e se referem às alterações na frota que os dados coletados pelo nosso sistema possibilitariam.</h4>
         </div>`
     } else if (qtd_bus_depois > qtd_bus) {
       if (lucro_depois < lucro) {
@@ -190,6 +199,9 @@
             Quantidade de ônibus: ${qtd_bus_depois} ônibus
           </div>
           <div>
+            Viagens totais: ${viagens_totais_depois} viagens
+          </div>
+          <div>
             Quilometragem total: ${dist_total_depois}km
           </div>
           <div>
@@ -213,7 +225,10 @@
           <div style="color: green; font-weight: 900;">
             Diferença de lucro: R$${diferenca.toFixed(2)}
           </div>
-          <h4>Todos os valores são estimados e os resultados de lucro não são garantidos na compra do nosso sistema, isso depende de como você remanejará sua frota.</h3>
+          <div style="color: green; font-weight: 900; font-size: 20px;">
+            Diferença de lucro em um mês: R$${(diferenca * 30).toFixed(2)}
+          </div>
+          <h4>Todos os valores são estimados e se referem às alterações na frota que os dados coletados pelo nosso sistema possibilitariam.</h4>
         </div>`
       }
     } else if (qtd_bus_depois == qtd_bus) {
