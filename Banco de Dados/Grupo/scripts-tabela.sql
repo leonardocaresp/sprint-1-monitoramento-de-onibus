@@ -14,24 +14,15 @@ regiao VARCHAR(60) NOT NULL,
 telefone CHAR(15) NOT NULL UNIQUE  
 );
 
-
-
 CREATE TABLE registro_passageiro ( -- Trata do dado de entrada ou saída de um ônibus
-<<<<<<< HEAD
 id_regis_passag INT PRIMARY KEY AUTO_INCREMENT,
-tipoDado TINYINT NOT NULL, -- 0 para saídas e 1 para entradas
-=======
 id INT PRIMARY KEY AUTO_INCREMENT,
 tipo_dado TINYINT NOT NULL, -- 0 para saídas e 1 para entradas
->>>>>>> 5a1771a53f71cd0529d28de65299802e4f5481b1
 horario_data DATETIME DEFAULT CURRENT_TIMESTAMP,
 placa CHAR(7) NOT NULL,
 linha VARCHAR(35) NOT NULL,
-
 CONSTRAINT chTipoDado CHECK(tipo_dado IN(0, 1))
 );
-
-
 
 CREATE TABLE onibus_tempo_real( -- Para monitoramento constante
 id_onibus_tempo_real INT PRIMARY KEY AUTO_INCREMENT,
@@ -42,8 +33,6 @@ passageiros INT DEFAULT 0 NOT NULL,
 capacidade_maxima INT NOT NULL,
 tarifa DECIMAL(4,2)
 );
-
-
 
 CREATE TABLE onibus_relatorio_diario( -- Para monitoramento temporizado (p/ dia)
 id_onibus_relat_diario INT PRIMARY KEY AUTO_INCREMENT,
@@ -58,8 +47,6 @@ valor_total DECIMAL(10,2)
 	AS (total_passageiros * tarifa)
  );
 
-
-
 CREATE TABLE linha( -- Representa dados de todos os ônibus de uma linha
 id_linha INT PRIMARY KEY AUTO_INCREMENT,
 codigo CHAR(7) NOT NULL,
@@ -73,10 +60,7 @@ valor_total DECIMAL(10,2)
         AS (passageiros_total * tarifa)
 );
 
-
-
 --          INSERTS
-
 INSERT INTO empresa 
 (cnpj, nome_empresa, email, senha, regiao, telefone) VALUES
 ('00.000.000/0001-91', 'Mobi Brasil', 'mobi@email.com', 'senha123', 'São Paulo', '(11) 98765-4321'),
@@ -84,13 +68,11 @@ INSERT INTO empresa
 ('00.011.011/0011-11', 'MobiRio', 'mobirio@email.com', 'senha1234', 'Rio de Janeiro', '(21) 98765-1520'),
 ('12.713.901/1021-51', 'Transcon', 'transcon@email.com', 'senha12354', 'Belo Horizonte', '(31) 98325-4320');
 
-
 INSERT INTO registro_passageiro (placa, tipo_dado, linha) VALUES
 ('ABC1234', 0, '607C-10'),
 ('DEF5678', 1, '5106-10'),
 ('GHI9012', 1, '483 - Penha'),
 ('JKL3456', 0, '8150 - União');
-
 
 INSERT INTO onibus_tempo_real 
 (placa, codigo_linha, nome_linha, passageiros, capacidade_maxima, tarifa) VALUES
@@ -99,14 +81,12 @@ INSERT INTO onibus_tempo_real
 ('JCC3412', '483 - Penha', 'Penha - Ipanema', 33, 80, 5.30),
 ('LEO6671', '8150 - União', ' União - Serra', 60, 80, 5.30);
 
-
 INSERT INTO onibus_relatorio_diario
 (placa, codigo_linha, nome_linha, viagens, horario_rodando, total_passageiros, tarifa) VALUES
 ('ABC1134', '607C-10', 'Jardim Miriam - Itaim Bibi', 12, '08:30 - 18:30', 8000, 5.30),
 ('CBA1234', '5106-10', 'Mar Paulista - São Francisco', 10, '09:00 - 19:00', 6000, 5.30),
 ('JCC3412', '483', 'Penha - Ipanema', 10, '10:00 - 18:00', 3500, 5.00),
 ('LEO6671', '8150', 'União - Serra', 12, '07:30 - 17:30', 4000, 6.25);
-
 
 INSERT INTO linha
 (codigo, nome, passageiros_total, passageiros_manha, passageiros_tarde, passageiros_noite, tarifa) VALUES
@@ -115,11 +95,18 @@ INSERT INTO linha
 ('483', 'Penha - Ipanema', 3500, 1300, 1400, 800, 5.00),
 ('8150', 'União - Serra', 4000, 1500, 1600, 900, 6.25);
 
-
-
 -- Apresentação de registros de empresas no sistema
 SELECT * FROM empresa;
+-- Apresentação de registros de entrada e saída passageiros
+SELECT * FROM registro_passageiro;
+-- Apresentação de registros de ocupação em tempo real dos ônibus
+ SELECT * from onibus_tempo_real;
+-- Apresentação de registros de todas as entradas diárias no ônibus
+SELECT * FROM onibus_relatorio_diario;
+-- Apresentação de registros da linha
+SELECT * FROM linha;
 
+-- Apresentação formatada das empresas no sistema
 SELECT
  cnpj AS 'Cnpj',
  nome_empresa AS 'Nome da Empresa',
@@ -129,10 +116,7 @@ SELECT
  telefone AS 'Telefone para Contato'
 FROM empresa;
 
-
--- Apresentação de registros de entrada e saída passageiros
-SELECT * FROM registro_passageiro;
-
+-- Apresentação formatada dos registros de entrada e saída passageiros
 SELECT 
  id_regis_passag AS 'Identificação (ID)',
  CASE
@@ -146,8 +130,7 @@ FROM registro_passageiro;
 
 
 
--- Apresentação de registros de ocupação em tempo real dos ônibus
- SELECT * from onibus_tempo_real;
+
  
  SELECT
   placa AS 'Placa',
@@ -161,8 +144,7 @@ FROM registro_passageiro;
 
 
 
--- Apresentação de registros de todas as entradas diárias no ônibus
-SELECT * FROM onibus_relatorio_diario;
+
 
 SELECT
  placa AS 'Placa',
@@ -175,8 +157,7 @@ SELECT
 FROM onibus_relatorio_diario;
 
 
--- Apresentação de registros da linha
-SELECT * FROM linha;
+
 
 SELECT 
  codigo AS 'Código',
