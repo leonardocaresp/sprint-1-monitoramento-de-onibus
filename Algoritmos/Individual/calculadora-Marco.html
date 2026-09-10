@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <label for="qtdOnibus">Insira a quantidade de ônibus da linha:</label>
+    <input type="text" id="qtdOnibus"><br><br>
+
+
+    <label for="qtdKm">Insira a quantidade de kms rodados pela linha:</label>
+    <input type="text" id="qtdKm"><br><br>
+
+
+    <label for="qtdDiasOp">Insira a quantidade de dias de operação da linha:</label>
+    <input type="text" id="qtdDiasOp"><br><br>
+
+
+    <label for="custoKm">Insira o custo por km da linha:</label>
+    <input type="text" id="custoKm"><br><br>
+
+
+    <label for="qtdPasOn">Insira a quantidade de passageiros por ônibus da linha:</label>
+    <input type="text" id="qtdPasOn"><br><br>
+
+
+    <label for="tarifaLinha">Insira a tarifa da linha:</label>
+    <input type="text" id="tarifaLinha"><br><br>    
+
+    <button onclick="calcula()">Calcular</button>
+
+    <div id="divRes"></div>
+
+</body>
+<script>
+    
+    
+    function calcula() {
+        let quantidadeOnibus = Number(qtdOnibus.value)
+        let kmPorOnibusDia = Number(qtdKm.value)
+        let diasOperacaoMes = Number(qtdDiasOp.value)
+        let custoPorKm = Number(custoKm.value)
+        let passageirosPorOnibusDia = Number(qtdPasOn.value)
+        let receitaPorPassageiro = Number(tarifaLinha.value)
+        
+        
+        let quilometragemMensal = (quantidadeOnibus * kmPorOnibusDia * diasOperacaoMes).toFixed(2)
+        let custoOperacionalMensal = (quilometragemMensal * custoPorKm).toFixed(2)
+        let passageirosMensais = (quantidadeOnibus * passageirosPorOnibusDia * diasOperacaoMes).toFixed(2)
+        let receitaMensal = (passageirosMensais * receitaPorPassageiro).toFixed(2)
+        let diferencaCustoReceita = (custoOperacionalMensal - receitaMensal).toFixed(2)
+        let resultadoOperacional = (receitaMensal - custoOperacionalMensal).toFixed(2) // if superativ ou deficit.
+        let custoOperacionalPorPassageiro = 0
+        let resultadoFinanceiro = ""
+
+
+        if(passageirosMensais > 0 ) {
+           custoOperacionalPorPassageiro =  (custoOperacionalMensal / passageirosMensais).toFixed(2)
+        }
+
+        if(custoOperacionalMensal > resultadoOperacional) {
+            resultadoFinanceiro = "prejuizo"
+        } else {
+            resultadoFinanceiro = "lucro"
+        }
+        
+        divRes.innerHTML += `
+            A quilometragem total mensal da linha foi de: ${quilometragemMensal}km <br>
+            O custo operacional mensal da linha foi de: R$${custoOperacionalMensal} <br>
+            A quantidade de passageiros mensais da linha foi de: ${passageirosMensais} passageiros <br>
+            O resultado operacional foi de: R$${resultadoOperacional} <br>
+            O custo operacional por passageiro é de: R$${custoOperacionalPorPassageiro} <br>
+
+            A linha deu ${resultadoFinanceiro} neste mês.
+
+            <br><br><br>
+        
+        `        
+    }
+
+
+</script>
+</html>
